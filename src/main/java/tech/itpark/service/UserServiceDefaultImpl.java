@@ -92,6 +92,7 @@ public class UserServiceDefaultImpl implements UserService {
             throw new IncorrectSecretException();
         }
 
+        entity.setPassword(model.getNewPassword());
         repository.save(entity);
 
         return new UserModel(

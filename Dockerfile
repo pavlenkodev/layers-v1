@@ -1,5 +1,5 @@
 FROM openjdk:11 AS build
-COPY src/Main.java .
+COPY src/main/java/tech/itpark/Main.java .
 RUN javac Main.java
 
 FROM openjdk:11

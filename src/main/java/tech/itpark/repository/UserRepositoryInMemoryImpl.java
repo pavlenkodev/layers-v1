@@ -1,7 +1,6 @@
 package tech.itpark.repository;
 
 import tech.itpark.entity.UserEntity;
-import tech.itpark.exception.UserNotFoundException;
 import tech.itpark.exception.UsernameNotExistsException;
 
 import java.util.*;
@@ -18,25 +17,20 @@ public class UserRepositoryInMemoryImpl implements UserRepository {
 
     @Override
     public Optional<UserEntity> findById(Long id) {
-        // Optional.of(null) -> NPE
         return Optional.ofNullable(idToEntity.get(id));
     }
 
     @Override
     public UserEntity save(UserEntity entity) {
-        // id = 0 ? новый : старый (обновляем)
-        // FIXME: login-то должен быть уникальным
         if (entity.getId() == 0) {
             entity.setId(nextId++);
         }
-        // FIXME: check if user didn't change login
         loginToEntity.put(entity.getLogin(), entity);
         return idToEntity.put(entity.getId(), entity);
     }
 
     @Override
     public boolean removeById(Long id) {
-        // FIXME: мы не хотели так-то удалять юзера
         if (idToEntity.get(id) == null) {
             throw new UsernameNotExistsException();
         }

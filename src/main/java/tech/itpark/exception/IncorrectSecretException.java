@@ -1,6 +1,6 @@
 package tech.itpark.exception;
 
-public class IncorrectSecretException extends RuntimeException{
+public class IncorrectSecretException extends RuntimeException {
     public IncorrectSecretException() {
     }
 

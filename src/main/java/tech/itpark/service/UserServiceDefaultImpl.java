@@ -12,8 +12,6 @@ import java.time.OffsetDateTime;
 import java.util.Set;
 
 public class UserServiceDefaultImpl implements UserService {
-    // Service - вышележащий слой
-    // Поэтому он знает о нижележащем, но не наоборот
     private final UserRepository repository;
 
     public UserServiceDefaultImpl(UserRepository repository) {
@@ -26,15 +24,12 @@ public class UserServiceDefaultImpl implements UserService {
             throw new UsernameAlreadyExistsException(model.getLogin());
         }
 
-        // FIXME: remove manual mapping -> mapstruct
         UserEntity entity = repository.save(new UserEntity(
                 0,
                 model.getLogin(),
-                // FIXME: hash password
                 model.getPassword(),
                 model.getName(),
                 model.getSecret(),
-                // FIXME: extract hardcoded roles
                 Set.of("ROLE_USER"),
                 false,
                 OffsetDateTime.now().toEpochSecond() // long -> кол-во секунд с 1970 года 1 янв 00:00 по UTC
@@ -61,12 +56,9 @@ public class UserServiceDefaultImpl implements UserService {
         }
 
         if (!entity.getPassword().equals(model.getPassword())) {
-            // username or password invalid
-            // password invalid
             throw new PasswordInvalidException();
         }
 
-        // FIXME: DRY (Don't repeat yourself)
         return new UserModel(
                 entity.getId(),
                 entity.getLogin(),

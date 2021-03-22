@@ -3,7 +3,6 @@ package tech.itpark.repository;
 import tech.itpark.entity.UserEntity;
 import tech.itpark.exception.DataAccessException;
 import tech.itpark.exception.UserNotFoundException;
-import tech.itpark.exception.UsernameNotExistsException;
 import tech.itpark.jdbc.RowMapper;
 
 import java.sql.Connection;
@@ -56,6 +55,7 @@ public class UserRepositoryJDBCImpl implements UserRepository {
             throw new DataAccessException(e);
         }
     }
+
     // В процессе, пока проверять не стоит
     @Override
     public Optional<UserEntity> findById(Long id) {
@@ -78,6 +78,24 @@ public class UserRepositoryJDBCImpl implements UserRepository {
 
     @Override
     public UserEntity save(UserEntity entity) {
+        if (entity.getId() == 0) {
+
+            try (final Statement stmt = connection.createStatement();
+                 final ResultSet rs = stmt.executeQuery("INSERT INTO users (id, login, password, name, secret, roles, EXTRACT(EPOCH FROM created) created, removed) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            ) {
+                long nextId = 0;
+                final UserEntity item = mapper.map(rs);
+                item.setId(++nextId);
+                // Save item
+                final UserEntity saveNewUser = save(item);
+
+                return item;
+            } catch (SQLException e) {
+
+            }
+        }
+
+        final Optional<UserEntity> existUser = findById(entity.getId());
         return null;
     }
 

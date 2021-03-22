@@ -32,10 +32,12 @@ public class UserRepositoryInMemoryImpl implements UserRepository {
 
     @Override
     public boolean removeById(Long id) {
-        if (idToEntity.get(id) == null) {
+        final UserEntity entity = idToEntity.get(id);
+        if (entity == null) {
             throw new UserNotFoundException();
         }
-        return idToEntity.get(id).isRemoved();
+
+        return entity.isRemoved();
     }
 
     @Override

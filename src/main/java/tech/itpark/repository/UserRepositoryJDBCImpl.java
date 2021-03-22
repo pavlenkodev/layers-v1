@@ -56,7 +56,7 @@ public class UserRepositoryJDBCImpl implements UserRepository {
         }
     }
 
-    // В процессе, пока проверять не стоит
+    // В процессе, пока не проверяйте
     @Override
     public Optional<UserEntity> findById(Long id) {
         try (
